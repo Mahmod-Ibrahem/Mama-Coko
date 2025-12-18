@@ -1,0 +1,225 @@
+import {createRouter, createWebHistory} from "vue-router";
+import store from "../store";
+import AppLayout from "../components/AppLayout.vue";
+import Login from "../views/Login.vue";
+import ProductForm from "../views/Products/ProductForm.vue";
+import Products from "../views/Products/products.vue";
+import Categories from "../views/Category/Categories.vue";
+import CategoryForm from "../views/Category/CategoryForm.vue";
+import ProductImages from "../views/Products/ProductImages.vue";
+import Reviews from "../views/Reviews/Reviews.vue";
+import ReviewForm from "../views/Reviews/ReviewForm.vue";
+import Faqs from "../views/Faq/Faqs.vue";
+import FaqForm from "../views/Faq/FaqForm.vue";
+import Blogs from "../views/Blogs/Blogs.vue";
+import BlogsForm from "../views/Blogs/BlogsForm.vue";
+import Locations from "../views/Locations/Locations.vue";
+import LocationForm from "../views/Locations/LocationForm.vue";
+import Inclusions from "../views/Inclusion/Inclusions.vue";
+import InclusionForm from "../views/Inclusion/InclusionForm.vue";
+import Exclusions from "../views/Exclusion/Exclusions.vue";
+import ExclusionForm from "../views/Exclusion/ExclusionForm.vue";
+import Settings from "../views/Setting/Settings.vue";
+import SettingForm from "../views/Setting/SettingForm.vue";
+import Gallery from "../views/Gallery/Gallery.vue";
+import GalleryForm from "../views/Gallery/GalleryForm.vue";
+
+const routes = [
+    {
+        path: "/",
+        name: "default",
+        component: Login,
+    },
+    {
+        path: "/app",
+        name: "app",
+        component: AppLayout,
+        meta: {
+            requireAuth: true,
+        },
+        children: [
+            {
+                path: "products",
+                name: "app.products",
+                component: Products,
+            },
+            {
+                path: "products/create",
+                name: "app.products.create",
+                component: ProductForm,
+            },
+            {
+                path: "products/:id",
+                name: "app.products.edit",
+                component: ProductForm,
+            },
+            {
+                path: "products/Images/:id",
+                name: "app.products.view",
+                component: ProductImages,
+            },
+            {
+                path: "categories",
+                name: "app.categories",
+                component: Categories,
+            },
+            {
+                path: "categories/create",
+                name: "app.categories.create",
+                component: CategoryForm,
+            },
+            {
+                path: "categories/:id",
+                name: "app.categories.edit",
+                component: CategoryForm,
+
+            },
+            {
+                path: 'reviews',
+                name: 'app.reviews',
+                component: Reviews
+            },
+            {
+                path: 'reviews/create',
+                name: 'app.reviews.create',
+                component: ReviewForm
+            },
+            {
+                path: 'reviews/:id',
+                name: 'app.reviews.edit',
+                component: ReviewForm
+            },
+            {
+                path: 'faqs',
+                name: 'app.faqs',
+                component: Faqs
+            },
+            {
+                path: 'faq/create',
+                name: 'app.faq.create',
+                component: FaqForm
+            },
+            {
+                path: 'faqs/:id',
+                name: 'app.faq.edit',
+                component: FaqForm
+            },
+            {
+                path: 'blog',
+                name: 'app.blogs',
+                component: Blogs
+            },
+            {
+                path: 'blog/create',
+                name: 'app.blogs.create',
+                component: BlogsForm
+            },
+            {
+                path: 'blog/:id',
+                name: 'app.blogs.edit',
+                component: BlogsForm
+            },
+            {
+                path: "locations",
+                name: "app.locations",
+                component: Locations
+            },
+            {
+                path: "locations/create",
+                name: "app.locations.create",
+                component: LocationForm
+            },
+            {
+                path: "locations/:id",
+                name: "app.locations.edit",
+                component: LocationForm
+            },
+            {
+                path: 'inclusions',
+                name: 'app.inclusions',
+                component: Inclusions
+            },
+            {
+                path: 'inclusions/create',
+                name: 'app.inclusions.create',
+                component: InclusionForm
+            },
+            {
+                path: 'inclusions/:id',
+                name: 'app.inclusions.edit',
+                component: InclusionForm
+            },
+            {
+                path: 'exclusions',
+                name: 'app.exclusions',
+                component: Exclusions
+            },
+            {
+                path: 'exclusions/create',
+                name: 'app.exclusions.create',
+                component: ExclusionForm
+            },
+            {
+                path: 'exclusions/:id',
+                name: 'app.exclusions.edit',
+                component: ExclusionForm
+            },
+            {
+                path: 'settings',
+                name: 'app.settings',
+                component: Settings
+            },
+            {
+                path: 'settings/create',
+                name: 'app.settings.create',
+                component: SettingForm
+            },
+            {
+                path: 'settings/:id',
+                name: 'app.settings.edit',
+                component: SettingForm
+            },
+            {
+                path:'galleries',
+                name:'app.galleries',
+                component:Gallery
+            },
+            {
+                path:'galleries/create',
+                name:'app.galleries.create',
+                component:GalleryForm
+            },
+            {
+                path:'galleries/:id',
+                name:'app.galleries.edit',
+                component:GalleryForm
+            }
+        ],
+    },
+
+    {
+        path: "/login",
+        name: "login",
+        component: Login,
+        meta: {
+            requireGuest: true,
+        },
+    },
+];
+
+const router = createRouter({
+    history: createWebHistory(),
+    routes,
+});
+
+router.beforeEach((to, from, next) => {
+    if (to.meta.requireAuth && !store.state.user.token) {
+        next({name: "login"});
+    } else if (to.meta.requireGuest && store.state.user.token) {
+        next({name: "app.dashboard"});
+    } else {
+        next();
+    }
+});
+
+export default router;
